@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <input id="sessionId" value="zintis">
+    <input id="studentId" value="may">
+    <button id="joinSession">Join Session</button>
+    <button id="addToSession">Add to Session</button>
+    <script type="text/javascript">
+    var sessionData
+
+    function getBothId(){
+        var studentId = document.getElementById("studentId").value.trim()
+        var sessionId = document.getElementById("sessionId").value.trim()
+    	return {studentId,sessionId}
+    }
+
+    document.getElementById("joinSession").addEventListener('click', (e) => {
+				var bothId = getBothId()
+				console.log(bothId)
+				getSession(bothId.studentId,bothId.sessionId)
+    })
+    document.getElementById("addToSession").addEventListener('click', (e) => {
+				var bothId = getBothId()
+				console.log(bothId)
+				addStudentToSession(bothId.sessionId,bothId.studentId)
+    })
+
+    function addStudentToSession(sessionId, studentId) {
+        fetch(`http://localhost:8888/addStudentToSession/${sessionId}/${studentId}`, {
+            method: 'GET'
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            console.log(data);
+            sessionData = data
+        });
+    }
+    function getSession(studentId, sessionId) {
+        fetch(`http://localhost:8888/getSession/${sessionId}/${studentId}`, {
+            method: 'GET'
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            console.log(data);
+            sessionData = data
+        });
+    }
+    </script>
+</body>
+
+</html>

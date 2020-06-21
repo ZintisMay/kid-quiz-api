@@ -28,17 +28,17 @@
     <button id="submit">make new question</button>
     <script type="text/javascript">
     document.getElementById("submit").addEventListener('click', () => {
-        var question = gatherInputs()
-        console.log(question)
+        var q = gatherQuestionInputs()
+        console.log(q)
+        var questionObj = QuestionBuilder(q.prompt, "", [q.answer, q.wrong1, q.wrong2, q.wrong3])
         var sessionId = document.getElementById("sessionId").value.trim()
         console.log(sessionId)
         if (sessionId) {
-            postQuestion(sessionId, question)
+            postQuestion(sessionId, questionObj)
         }
-
     })
 
-    function gatherInputs() {
+    function gatherQuestionInputs() {
         let questionObj = {}
         let qi = document.getElementsByClassName("questionInputs")
         for (var item of qi) {
@@ -47,18 +47,19 @@
             }
             questionObj[item.id] = item.value
         }
+
         return questionObj
     }
 
     function postQuestion(id, questionObj) {
-    	console.log(questionObj)
-        fetch(`http://localhost:8888/testPost`, {
+        console.log(questionObj)
+        fetch(`http://localhost:8888/addQuestionToSession/${id}`, {
             method: 'POST',
             body: JSON.stringify(questionObj),
             headers: {
-          //     'Accept': 'application/json',
-      				'Content-Type': 'application/json',
-				      // 'Content-Type': 'application/x-www-form-urlencoded'
+                //     'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                // 'Content-Type': 'application/x-www-form-urlencoded'
 
             },
         }).then(function(response) {
@@ -66,6 +67,15 @@
         }).then(function(data) {
             console.log(data);
         });
+    }
+
+    function QuestionBuilder(prompt, imageUrl, answersArray) {
+        return {
+            prompt: prompt,
+            image: imageUrl,
+            answers: answersArray,
+            correctAnswer: answersArray[0]
+        }
     }
     </script>
 </body>
